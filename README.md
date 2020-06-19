@@ -205,3 +205,55 @@ sudo systemctl reload apache2
 
 GO TO `IPADDRESS/nextcloud` and continue setup
 
+### Raid Setup
+
+install mdadm
+```bash
+sudo apt-get -y install mdadm
+```
+
+setup raid 5 for four disks
+```bash
+sudo mdadm --create --verbose /dev/md/vol1 --level=5 --raid-devices=4 /dev/sda /dev/sdb /dev/sdc /dev/sdd
+```
+
+confirm setup
+```bash
+sudo mdadm --create --verbose /dev/md/vol1 --level=5 --raid-devices=4 /dev/sda /dev/sdb /dev/sdc /dev/sdd
+```
+
+save raid config as super user
+```bash
+sudo -i
+mdadm --detail --scan >> /etc/mdadm/mdadm.conf
+```
+
+make file system
+```bash
+sudo mkfs.ext4 -v -m .1 -b 4096 -E stride=32,stripe-width=64 /dev/md/vol1
+```
+
+mount the file system so we can access it
+```bash
+sudo mount /dev/md/vol1 /mnt
+```
+
+make copy of fstab file
+```bash
+sudo cp /etc/fstab /etc/fstab.bak
+```
+
+```bash
+sudo vim /etc/fstab
+```
+add this to the bottom with UUID in 'your uuid'
+```plain
+UUID=your_uuid /mnt ext4 defaults 0 0
+```
+
+change permisions 
+```bash
+sudo chown -R www-data:www-data /mnt
+sudo chmod -R 0777 /mnt
+```
+
