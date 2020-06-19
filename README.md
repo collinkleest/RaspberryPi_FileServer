@@ -45,17 +45,25 @@ Make sure sudo requires a password at all times
 ```bash
 sudo nano /etc/sudoers.d/010_pi-nopassword
 ```
-^^^ Change the following line; ^^^
+**^^^ Change the following line; ^^^**
+```plain
 $USER ALL=(ALL) PASWD: ALL
+```
 
 ##### Secure SSH Configuration
 ```bash
 sudo nano /etc/ssh/sshd_config 
 ```
-^^^ Change the following lines ^^^
+**^^^ Change the following lines ^^^**
+```plain
 AllowUsers $USER
 Port 65000
+```
 
+Reload you're SSH server
+```bash
+sudo systemctl reload sshd
+```
 
 ##### Firewall Configuration
 Install the UFW (Uncomplicated Firewall) firwall.
@@ -85,8 +93,66 @@ sudo ufw status
 # limit ssh login attempts
 sudo ufw limit ssh/tcp
 ```
+##### Docker
 
-##### Fail2Ban
+Download and run the docker convience script
+```bash
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+```
+Add user to docker group 
+```bash
+sudo usermod -aG docker $USER
+```
 
+Verify Installation 
+```bash
+docker version
+docker run hello-world
+```
 
+## NextCloud Personal Cloud Storage
+
+##### Install Apache2
+```bash
+sudo apt -y install apache2
+```
+
+##### Install PHP 7.3 and additional packages
+```
+sudo apt -y install php7.3 php7.3-gd php7.3-sqlite3 php7.3-curl php7.3-zip php7.3-xml php7.3-mbstring php7.3-mysql php7.3-bz2 php7.3-intl php7.3-smbclient php7.3-imap php7.3-gmp
+```
+
+##### Install MariaDB Server and Client
+```bash
+sudo apt -y install mariadb-client mariadb-server
+```
+
+##### Restart Apache
+```bash
+sudo systemctl restart apache2
+```
+
+##### Log into MYSQL server
+```bash
+sudo mysql -u root -p
+```
+
+##### Create the NextCloud Database
+```sql
+CREATE DATABASE nextclouddb;
+```
+
+##### Create user fill in PASSWORD with your desired password
+```sql
+CREATE USER 'nextclouduser'@'localhost' IDENTIFIED BY PASSWORD;
+```
+
+##### Grant Privlages to nextcloud user and flush privlages
+```sql
+GRANT ALL PRIVILEGES ON nextclouddb.* TO 'nextclouduser'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+### Installing NextCloud
 
