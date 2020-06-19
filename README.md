@@ -155,4 +155,53 @@ FLUSH PRIVILEGES;
 ```
 
 ### Installing NextCloud
+```bash
+cd /var/www
+```
+##### Download Latest version of nextcloud
+```bash
+curl https://download.nextcloud.com/server/releases/latest.tar.bz2 | sudo tar -jxv
+```
+
+##### Make Data Directory
+```bash
+sudo mkdir -p /var/www/nextcloud/data
+```
+
+##### User Controls
+```bash
+sudo chown -R www-data:www-data /var/www/nextcloud/
+sudo mkdir -p /var/www/nextcloud/data
+```
+
+### Apache Configuration 
+```bash
+sudo vim /etc/apache2/sites-available/nextcloud.conf
+```
+
+```conf
+Alias /nextcloud "/var/www/nextcloud/"
+
+<Directory /var/www/nextcloud/>
+  Require all granted
+  AllowOverride All
+  Options FollowSymLinks MultiViews
+
+  <IfModule mod_dav.c>
+    Dav off
+  </IfModule>
+
+</Directory>
+```
+
+##### Tell Apache to use the configuration file
+```bash
+sudo a2ensite nextcloud.conf
+```
+
+```bash
+sudo systemctl reload apache2
+```
+
+GO TO `IPADDRESS/nextcloud` and continue setup
 
