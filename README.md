@@ -257,3 +257,15 @@ sudo chown -R www-data:www-data /mnt
 sudo chmod -R 0777 /mnt
 ```
 
+
+### SSL CertBot
+install certbot
+```bash
+sudo apt-get install certbot python-certbot-apache
+```
+
+get cert and auto update apache configuration
+```bash
+sudo certbot --apache
+```
+follow the setup prompt
